@@ -23,7 +23,7 @@ from pydantic import BaseModel, Field
 sys.path.insert(0, str(Path(__file__).parent))
 from berriz_auto_register import (
     CAMOFOX, API_KEY, ACCOUNTS_FILE,
-    register_one, save_account, log,
+    register_one, save_account, log, vote_for_tws, Camofox,
 )
 
 # ── config ────────────────────────────────────────────────────────
@@ -89,6 +89,22 @@ def register(req: RegisterRequest):
     }
     status = 200 if payload["ok"] else 422
     return JSONResponse(content=payload, status_code=status)
+
+
+class VoteRequest(BaseModel):
+    camofox_user: str = Field(..., description="camofox userId with active logged-in session")
+
+@app.post("/vote", response_model=dict)
+def vote(req: VoteRequest):
+    try:
+        c = Camofox(req.camofox_user)
+        c.open('https://berriz.in/en/vote/mma2026/')
+        vote_for_tws(c)
+        payload = {"ok": True, "user": req.camofox_user}
+        c.close()
+        return payload
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 # ── entrypoint ────────────────────────────────────────────────────

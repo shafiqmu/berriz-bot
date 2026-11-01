@@ -3,7 +3,7 @@
 Bot pendaftaran akun otomatis untuk [Berriz](https://berriz.in) (Kakao Entertainment). Bisa membuat akun berapapun yang diinginkan secara otomatis, lengkap dengan verifikasi email OTP.
 
 Fitur utama:
-- **Fully automated**: email → OTP → password → terms → selesai (~34 detik/akun)
+- **Fully automated**: email → OTP → password → terms → vote TWS (MMA2026) (~45 detik/akun)
 - **API server**: kontrol dari HP via Termux atau perangkat lain
 - **Disposable email**: pakai mail.tm API, tanpa perlu daftar email sendiri
 - **Headless browser**: lewat camofox-browser, bypass captcha dan anti-bot
@@ -60,7 +60,8 @@ API tersedia di `http://<VPS_IP>:8000`.
 |--------|------|--------|
 | GET | `/health` | Cek status API |
 | GET | `/accounts` | Lihat semua akun |
-| POST | `/register` | Daftar akun baru |
+| POST | `/register` | Daftar akun baru + vote TWS |
+| POST | `/vote` | Vote TWS untuk akun yang sudah login |
 
 #### Contoh Request
 
@@ -90,6 +91,16 @@ Response:
     }
   ]
 }
+```
+
+#### POST /vote
+
+Vote TWS untuk akun yang sudah login. Butuh `camofox_user` dari `accounts.json`.
+
+```bash
+curl -X POST http://<VPS_IP>:8000/vote \
+  -H "Content-Type: application/json" \
+  -d '{"camofox_user": "berriz_bot_1234567890_1"}'
 ```
 
 #### Auto-start dengan Systemd
@@ -140,6 +151,9 @@ python3 berriz_termux.py --count 1
 
 # Lihat akun yang sudah ada
 python3 berriz_termux.py --list
+
+# Vote TWS untuk semua akun sekaligus
+python3 berriz_termux.py --vote-all
 ```
 
 Output:

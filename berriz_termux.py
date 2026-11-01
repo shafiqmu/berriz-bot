@@ -56,16 +56,46 @@ def list_accounts():
         print(f"  {i}. {a['email']}  |  {a['password']}  |  {a['created_at'][:10]}")
 
 
+def vote_all():
+    print(f"Mengambil daftar akun dari {API_URL} ...")
+    r = requests.get(f"{API_URL}/accounts", timeout=30)
+    r.raise_for_status()
+    accounts = r.json()
+    if not accounts:
+        print("Belum ada akun.")
+        return
+
+    print(f"Found {len(accounts)} akun. Mulai voting TWS...")
+    ok, fail = 0, 0
+    for a in accounts:
+        user = a.get('camofox_user')
+        if not user:
+            print(f"  skip {a['email']} (no camofox_user)")
+            continue
+        try:
+            r = requests.post(f"{API_URL}/vote", json={"camofox_user": user}, timeout=180)
+            r.raise_for_status()
+            print(f"  ✅ {a['email']} voted")
+            ok += 1
+        except Exception as e:
+            print(f"  ❌ {a['email']} failed: {e}")
+            fail += 1
+    print(f"\nSelesai: {ok} ok, {fail} gagal")
+
+
 def main():
     ap = argparse.ArgumentParser(description="Berriz bot client (Termux)")
     ap.add_argument("--count", type=int, default=1, help="Jumlah akun (default: 1)")
     ap.add_argument("--password", default=None, help="Password tetap (default: random)")
     ap.add_argument("--list", action="store_true", help="Lihat akun yang sudah ada")
+    ap.add_argument("--vote-all", action="store_true", help="Vote TWS untuk semua akun")
     ap.add_argument("--api", default=API_URL, help="API server URL")
     args = ap.parse_args()
 
     if args.list:
         list_accounts()
+    elif args.vote_all:
+        vote_all()
     else:
         register(args.count, args.password)
 

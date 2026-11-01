@@ -29,6 +29,7 @@ API_KEY = os.environ.get('CAMOFOX_API_KEY', '')
 MAILTM = 'https://api.mail.tm'
 MAILTM_PASSWORD = 'MailtmPass123!'
 SIGNUP_URL = 'https://accounts.berriz.in/en/signup/?postRedirectUri=https%3A%2F%2Fberriz.in%2Fen'
+VOTE_URL = 'https://berriz.in/en/vote/mma2026/'
 ACCOUNTS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'accounts.json')
 
 H = {'Content-Type': 'application/json'}
@@ -265,6 +266,9 @@ def register_one(idx, password):
     click_button(c, 'OK')
     time.sleep(1)
 
+    # 5) vote for TWS on MMA2026
+    vote_for_tws(c)
+
     account = {
         'email': addr,
         'password': password,
@@ -286,6 +290,36 @@ def save_account(account):
     data.append(account)
     with open(ACCOUNTS_FILE, 'w') as f:
         json.dump(data, f, indent=2)
+
+
+def vote_for_tws(c):
+    """Navigate to MMA2026 voting page and vote for TWS."""
+    log('voting for TWS on MMA2026...')
+    c.navigate(VOTE_URL)
+    time.sleep(3)
+
+    # Find TWS button and click
+    result = c.evaluate("""(() => {
+        const btn = [...document.querySelectorAll('button')].find(b => b.innerText.includes('TWS'));
+        if (!btn) return 'TWS_NOT_FOUND';
+        btn.click();
+        return 'CLICKED';
+    })()""")
+    if result != 'CLICKED':
+        raise RuntimeError(f'failed to click TWS: {result}')
+
+    time.sleep(2)
+
+    # Verify vote registered
+    pressed = c.evaluate("""(() => {
+        const btn = [...document.querySelectorAll('button')].find(b => b.innerText.includes('TWS'));
+        return btn ? btn.getAttribute('aria-pressed') : 'NOT_FOUND';
+    })()""")
+    if pressed != 'true':
+        raise RuntimeError(f'TWS vote not registered: aria-pressed={pressed}')
+
+    log('✅ TWS vote confirmed (aria-pressed=true)')
+    return True
 
 
 def main():

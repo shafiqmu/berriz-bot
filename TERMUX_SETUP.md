@@ -27,6 +27,9 @@ python3 berriz_termux.py --count 3 --password "MyPass123!"
 
 # Lihat akun yang sudah ada
 python3 berriz_termux.py --list
+
+# Vote TWS untuk semua akun sekaligus
+python3 berriz_termux.py --vote-all
 ```
 
 ## Di VPS (admin)
