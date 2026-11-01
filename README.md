@@ -128,17 +128,14 @@ python3 berriz_auto_register.py --count 1 --keep-session
 ### Opsi 3: Dari Termux (HP Android)
 
 ```bash
-# 1. Install Python
+# 1. Install Python + requests
 pkg update && pkg install python python-pip -y
 pip install requests
 
-# 2. Download client
+# 2. Download client (alamat VPS sudah built-in)
 wget https://raw.githubusercontent.com/shafiqmu/berriz-bot/master/berriz_termux.py
 
-# 3. Set IP VPS
-export BERRIZ_API="http://<IP_VPS>:8000"
-
-# 4. Daftar akun
+# 3. Daftar akun
 python3 berriz_termux.py --count 1
 
 # Lihat akun yang sudah ada

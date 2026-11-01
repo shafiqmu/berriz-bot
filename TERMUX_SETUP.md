@@ -9,11 +9,8 @@ API server sudah running di VPS (`129.226.216.84:8000`).
 pkg update && pkg install python python-pip -y
 pip install requests
 
-# 2. Download client script
-# (kirim file berriz_termux.py ke Termux via scp/termux-setup-storage/copy-paste)
-
-# 3. Set VPS IP (ganti dengan IP VPS kamu)
-export BERRIZ_API="http://129.226.216.84:8000"
+# 2. Download client
+wget https://raw.githubusercontent.com/shafiqmu/berriz-bot/master/berriz_termux.py
 ```
 
 ## Pakai

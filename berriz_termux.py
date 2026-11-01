@@ -15,7 +15,7 @@ except ImportError:
     sys.exit("Butuh requests: pip install requests")
 
 
-API_URL = os.environ.get("BERRIZ_API", "http://192.168.1.100:8000")  # ganti ke IP VPS
+API_URL = os.environ.get("BERRIZ_API", "http://129.226.216.84:8000")
 
 
 def register(count=1, password=None):
