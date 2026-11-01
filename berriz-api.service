@@ -1,0 +1,19 @@
+[Unit]
+Description=Berriz Auto-Register API
+After=network.target camofox-browser.service
+Requires=camofox-browser.service
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/berriz-bot
+Environment="CAMOFOX_API_KEY=c5c849944ffb5e6c3ea4bdc5aa3bd9126bfc71e7440acef681225559242ff2bd"
+Environment="BERRIZ_API_PORT=8000"
+ExecStart=/usr/bin/python3 berriz_api.py
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
